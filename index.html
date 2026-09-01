@@ -14,6 +14,8 @@
       --bg-surface: #f1f5f9;
       --text-main: #0f172a;
       --text-muted: #64748b;
+      --accent-red: #ef4444;
+      --accent-green: #10b981;
       --border: #e2e8f0;
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -34,7 +36,6 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-    html { scroll-behavior: smooth; }
     body { background-color: var(--bg-page); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; transition: background-color 0.3s ease, color 0.3s ease; }
 
     header {
@@ -46,37 +47,12 @@
       position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm);
     }
 
-    .header-left { display: flex; align-items: center; gap: 2.5rem; }
-
     .logo {
       font-size: 1.5rem; font-weight: 800;
       background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      cursor: pointer; user-select: none; text-decoration: none;
+      cursor: pointer; user-select: none;
     }
-
-    /* Navigation Bar */
-    .nav-bar { display: flex; gap: 1.5rem; align-items: center; }
-    .nav-link {
-      color: var(--text-main); text-decoration: none; font-weight: 600; font-size: 0.95rem;
-      transition: color 0.2s ease; cursor: pointer; position: relative; padding: 0.5rem 0;
-    }
-    .nav-link:hover { color: var(--primary); }
-
-    /* Categories Dropdown */
-    .dropdown { position: relative; display: inline-block; }
-    .dropdown-menu {
-      display: none; position: absolute; top: 100%; left: 0;
-      background-color: var(--bg-card); min-width: 160px;
-      box-shadow: var(--shadow-lg); border: 1px solid var(--border);
-      border-radius: 8px; z-index: 200; overflow: hidden; padding: 0.5rem 0;
-    }
-    .dropdown-menu a {
-      color: var(--text-main); padding: 0.6rem 1rem; text-decoration: none;
-      display: block; font-size: 0.9rem; font-weight: 500; transition: background 0.2s ease;
-    }
-    .dropdown-menu a:hover { background-color: var(--bg-surface); color: var(--primary); }
-    .dropdown:hover .dropdown-menu { display: block; }
 
     .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
 
@@ -109,12 +85,26 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Top Search Bar Styling */
     .controls-bar {
-      display: flex; gap: 1rem; align-items: center; justify-content: flex-end;
+      display: flex; gap: 1rem; align-items: center;
       margin-bottom: 2rem; background: var(--bg-card); padding: 0.85rem 1.25rem; border-radius: var(--radius);
       border: 1px solid var(--border); box-shadow: var(--shadow-md);
     }
-
+    .search-input-wrapper {
+      display: flex; align-items: center; gap: 0.5rem; flex: 1;
+      background: var(--bg-surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: 0 0.85rem; transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .search-input-wrapper:focus-within {
+      border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .search-input-wrapper span { font-size: 1.1rem; color: var(--text-muted); }
+    .search-input-wrapper input {
+      width: 100%; border: none; background: transparent; padding: 0.65rem 0;
+      font-size: 0.95rem; color: var(--text-main); outline: none;
+    }
+    
     select {
       padding: 0.65rem 1rem; border-radius: 8px; border: 1px solid var(--border);
       background: var(--bg-surface); color: var(--text-main); font-size: 0.9rem;
@@ -140,7 +130,7 @@
     .hero-price-row { display: flex; align-items: center; gap: 1.5rem; margin-top: 0.5rem; }
     .hero-price { font-size: 2rem; font-weight: 800; color: var(--text-main); }
 
-    .hero-image-wrapper { height: 320px; width: 100%; border-radius: var(--radius); overflow: hidden; background: var(--bg-surface); cursor: pointer; }
+    .hero-image-wrapper { height: 320px; width: 100%; border-radius: var(--radius); overflow: hidden; background: var(--bg-surface); }
     .hero-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
 
     .hero-controls { position: absolute; bottom: 1.5rem; right: 1.5rem; display: flex; gap: 0.5rem; z-index: 10; }
@@ -153,121 +143,83 @@
     .card {
       background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
       overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow-sm);
-      transition: transform 0.2s ease, box-shadow 0.2s ease; position: relative; cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
     .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-    .card-img-wrapper { height: 220px; overflow: hidden; background: var(--bg-surface); cursor: pointer; position: relative; }
-    .card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
-    .card-img-wrapper:hover img { transform: scale(1.05); }
-
-    .quick-view-badge {
-      position: absolute; top: 12px; right: 12px; background: rgba(15, 23, 42, 0.75);
-      color: #fff; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem;
-      font-weight: 600; opacity: 0; transition: opacity 0.2s ease; backdrop-filter: blur(4px);
-    }
-    .card-img-wrapper:hover .quick-view-badge { opacity: 1; }
+    .card-img-wrapper { height: 220px; overflow: hidden; background: var(--bg-surface); }
+    .card img { width: 100%; height: 100%; object-fit: cover; }
 
     .card-body { padding: 1.25rem; display: flex; flex-direction: column; flex: 1; }
     .card-header-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
     .card-category { font-size: 0.75rem; color: var(--primary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
-
     .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
-    .card-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.4; }
     .card-footer { margin-top: auto; display: flex; justify-content: space-between; align-items: center; }
     .card-price { font-size: 1.25rem; font-weight: 800; color: var(--text-main); }
 
-    /* Modal Popup Styling */
-    .modal-backdrop {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(6px);
-      display: flex; justify-content: center; align-items: center;
-      z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
-      padding: 1.5rem;
-    }
-    .modal-backdrop.active { opacity: 1; pointer-events: auto; }
+    .checkout-layout { display: grid; grid-template-columns: 1fr 400px; gap: 2rem; align-items: start; }
+    .checkout-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
+    .section-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; }
+    .step-badge { background: var(--primary); color: #fff; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; }
+    
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group.full-width { grid-column: span 2; }
+    .form-group label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
 
-    .modal-container {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 16px; max-width: 800px; width: 100%; overflow: hidden;
-      box-shadow: var(--shadow-lg); display: grid; grid-template-columns: 1fr 1fr;
-      position: relative; transform: scale(0.95); transition: transform 0.25s ease;
-    }
-    .modal-backdrop.active .modal-container { transform: scale(1); }
+    .payment-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem; }
+    .payment-card { border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 0.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 600; transition: all 0.2s ease; }
+    .payment-card:hover, .payment-card.active { border-color: var(--primary); background: var(--bg-surface); }
 
-    .modal-close-btn {
-      position: absolute; top: 1rem; right: 1rem;
-      width: 32px; height: 32px; border-radius: 50%;
-      background: var(--bg-surface); border: 1px solid var(--border);
-      color: var(--text-main); font-size: 1.2rem; font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 10; transition: background 0.2s ease;
-    }
-    .modal-close-btn:hover { background: var(--border); }
+    .payment-fields-section { display: none; }
+    .payment-fields-section.active { display: grid; }
 
-    .modal-image-wrapper { height: 100%; min-height: 320px; background: var(--bg-surface); }
-    .modal-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+    .summary-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; position: sticky; top: 90px; }
+    .order-items { max-height: 240px; overflow-y: auto; margin-bottom: 1rem; }
+    .order-item { display: flex; gap: 1rem; align-items: center; margin-bottom: 0.75rem; }
+    .order-item img { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; }
+    .order-item-info { flex: 1; }
+    .order-item-title { font-size: 0.85rem; font-weight: 600; }
+    .order-item-qty { font-size: 0.75rem; color: var(--text-muted); }
+    .order-item-price { font-size: 0.85rem; font-weight: 700; }
 
-    .modal-content { padding: 2rem; display: flex; flex-direction: column; justify-content: center; gap: 1rem; }
-    .modal-category { font-size: 0.8rem; color: var(--primary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
-    .modal-title { font-size: 1.6rem; font-weight: 800; line-height: 1.2; }
-    .modal-desc { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
-    .modal-price { font-size: 1.75rem; font-weight: 800; color: var(--text-main); }
+    .summary-row { display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .summary-row.total { color: var(--text-main); font-size: 1.15rem; font-weight: 800; border-top: 1px solid var(--border); padding-top: 0.75rem; margin-top: 0.75rem; }
+    .summary-row.highlight { color: var(--primary); font-weight: 700; background: var(--bg-surface); padding: 0.5rem; border-radius: 6px; margin-top: 0.5rem; }
 
-    /* Footer Section */
-    footer {
-      background: var(--bg-card); border-top: 1px solid var(--border);
-      padding: 2rem 2rem 1.5rem; margin-top: 4rem;
-    }
-    .footer-container {
-      max-width: 1280px; margin: 0 auto; display: flex;
-      flex-direction: column; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem;
-    }
-    .footer-socials { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
-    .footer-socials h3 { font-size: 1.1rem; font-weight: 700; }
-    .social-icons { display: flex; gap: 1rem; }
-    .social-icon {
-      width: 40px; height: 40px; border-radius: 50%; background: var(--bg-surface);
-      display: flex; align-items: center; justify-content: center; color: var(--text-main);
-      text-decoration: none; font-weight: 700; border: 1px solid var(--border);
-      transition: all 0.2s ease;
-    }
-    .social-icon:hover { background: var(--primary); color: #ffffff; border-color: var(--primary); }
-    .footer-bottom {
-      border-top: 1px solid var(--border); padding-top: 1.5rem; text-align: center;
-      color: var(--text-muted); font-size: 0.85rem; font-weight: 500; width: 100%;
-    }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 300; display: none; justify-content: center; align-items: center; }
+    .modal-overlay.active { display: flex; }
+    .modal-card { background: var(--bg-card); border-radius: 16px; padding: 2rem; width: 90%; max-width: 420px; box-shadow: var(--shadow-lg); text-align: center; border: 1px solid var(--border); }
+    .modal-icon { width: 56px; height: 56px; background: #dcfce7; color: var(--accent-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 1.25rem; }
 
-    @media (max-width: 768px) {
-      .header-left { gap: 1rem; }
-      .nav-bar { gap: 0.8rem; }
-      .modal-container { grid-template-columns: 1fr; max-height: 85vh; overflow-y: auto; }
-      .modal-image-wrapper { height: 240px; min-height: auto; }
-      .modal-content { padding: 1.5rem; }
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(2px); z-index: 150; display: none; }
+    .overlay.active { display: block; }
+    .cart-drawer { position: fixed; top: 0; right: -450px; width: 420px; height: 100%; background: var(--bg-card); border-left: 1px solid var(--border); transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 1.5rem; display: flex; flex-direction: column; z-index: 200; box-shadow: var(--shadow-lg); }
+    .cart-drawer.open { right: 0; }
+    .cart-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+    .cart-items { flex: 1; overflow-y: auto; padding: 1rem 0; }
+    .cart-item { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; padding: 0.75rem; background: var(--bg-surface); border-radius: 8px; }
+    .cart-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; }
+    .cart-item-details { flex: 1; }
+    .qty-controls { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.4rem; }
+    .btn-qty { padding: 2px 8px; border-radius: 4px; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); }
+
+    @media (max-width: 900px) {
+      .controls-bar { flex-direction: column; align-items: stretch; }
+      .hero-slide { grid-template-columns: 1fr; padding: 1.5rem; }
+      .hero-image-wrapper { height: 220px; }
+      .checkout-layout { grid-template-columns: 1fr; }
+      .payment-options { grid-template-columns: 1fr; }
+      .cart-drawer { width: 100%; right: -100%; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="header-left">
-      <a href="index.html" class="logo">J.S Shop</a>
-      <nav class="nav-bar">
-        <a href="index.html" class="nav-link">Home</a>
-        <div class="dropdown">
-          <span class="nav-link">Categories ▾</span>
-          <div class="dropdown-menu">
-            <a href="#" onclick="filterByCategoryNav('Sneakers')">Sneakers</a>
-            <a href="#" onclick="filterByCategoryNav('Formal')">Formal</a>
-            <a href="#" onclick="filterByCategoryNav('Boots')">Boots</a>
-            <a href="#" onclick="filterByCategoryNav('Sports')">Sports</a>
-          </div>
-        </div>
-        <a href="#about-us" class="nav-link">About Us</a>
-      </nav>
-    </div>
-
+    <div class="logo" onclick="switchView('user')">J.S Shop</div>
     <div class="nav-actions">
-      <button class="btn-outline" id="theme-toggle-btn" onclick="toggleTheme()">🌙 Dark Mode</button>
+      <button class="btn-outline" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Light/Dark Theme">🌙 Dark Mode</button>
       <button class="btn-primary badge-btn" onclick="toggleCart()">
         Cart <span class="badge" id="cart-count">0</span>
       </button>
@@ -277,6 +229,10 @@
   <main>
     <section id="user-view" class="view-section active">
       <div class="controls-bar">
+        <div class="search-input-wrapper">
+          <span>🔍</span>
+          <input type="text" id="search-input" placeholder="Search product name or description..." oninput="applyFilters()">
+        </div>
         <select id="category-filter" onchange="applyFilters()">
           <option value="All">All Categories</option>
           <option value="Sneakers">Sneakers</option>
@@ -302,50 +258,181 @@
 
       <div class="product-grid" id="product-container"></div>
     </section>
+
+    <section id="checkout-view" class="view-section">
+      <div style="margin-bottom: 1.5rem;">
+        <button class="btn-outline" onclick="switchView('user')">← Back to Shopping</button>
+      </div>
+
+      <form id="checkout-form" onsubmit="processOrder(event)">
+        <div class="checkout-layout">
+          <div>
+            <div class="checkout-card">
+              <h2 class="section-title"><span class="step-badge">1</span> Shipping Details</h2>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="fname">First Name</label>
+                  <input type="text" id="fname" required placeholder="Jane">
+                </div>
+                <div class="form-group">
+                  <label for="lname">Last Name</label>
+                  <input type="text" id="lname" required placeholder="Doe">
+                </div>
+                <div class="form-group full-width">
+                  <label for="email">Email Address</label>
+                  <input type="email" id="email" required placeholder="jane.doe@example.com">
+                </div>
+                <div class="form-group full-width">
+                  <label for="address">Street Address</label>
+                  <input type="text" id="address" required placeholder="123 Market Street, Apt 4B">
+                </div>
+                <div class="form-group">
+                  <label for="city">City</label>
+                  <input type="text" id="city" required placeholder="New York">
+                </div>
+                <div class="form-group">
+                  <label for="zip">Postal Code</label>
+                  <input type="text" id="zip" required placeholder="Enter ZIP" oninput="calculateCheckoutTotals()">
+                </div>
+              </div>
+            </div>
+
+            <div class="checkout-card">
+              <h2 class="section-title"><span class="step-badge">2</span> Payment Method</h2>
+              <div class="payment-options">
+                <div class="payment-card active" onclick="selectPayment('card')">
+                  <input type="radio" name="pay_type" id="pay-card" value="card" checked> Credit Card
+                </div>
+                <div class="payment-card" onclick="selectPayment('paypal')">
+                  <input type="radio" name="pay_type" id="pay-paypal" value="paypal"> PayPal
+                </div>
+                <div class="payment-card" onclick="selectPayment('cod')">
+                  <input type="radio" name="pay_type" id="pay-cod" value="cod"> Cash On Delivery
+                </div>
+              </div>
+
+              <div id="card-fields" class="payment-fields-section active form-grid">
+                <div class="form-group full-width">
+                  <label for="cc-number">Card Number</label>
+                  <input type="text" id="cc-number" placeholder="4532 •••• •••• 8954" maxlength="19">
+                </div>
+                <div class="form-group">
+                  <label for="cc-exp">Expiry Date</label>
+                  <input type="text" id="cc-exp" placeholder="MM/YY" maxlength="5">
+                </div>
+                <div class="form-group">
+                  <label for="cc-cvc">CVC</label>
+                  <input type="password" id="cc-cvc" placeholder="123" maxlength="4">
+                </div>
+              </div>
+
+              <div id="paypal-fields" class="payment-fields-section form-grid">
+                <div class="form-group full-width">
+                  <label for="paypal-email">PayPal Email Address</label>
+                  <input type="email" id="paypal-email" placeholder="user@paypal-account.com">
+                </div>
+                <div class="form-group full-width">
+                  <label for="paypal-name">Account Holder Name</label>
+                  <input type="text" id="paypal-name" placeholder="John Doe">
+                </div>
+              </div>
+
+              <div id="cod-fields" class="payment-fields-section form-grid">
+                <div class="form-group full-width" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 1rem; border-radius: 8px;">
+                  <h4 style="color: var(--accent-green); font-size: 0.95rem; margin-bottom: 0.2rem;">Cash On Delivery (20% Deposit)</h4>
+                  <p style="color: var(--text-muted); font-size: 0.85rem;">Pay a 20% deposit online now. Pay remaining balance upon delivery.</p>
+                </div>
+                <div class="form-group full-width">
+                  <label for="cod-card">Card Number for Deposit</label>
+                  <input type="text" id="cod-card" placeholder="4532 •••• •••• 8954" maxlength="19">
+                </div>
+                <div class="form-group">
+                  <label for="cod-exp">Expiry Date</label>
+                  <input type="text" id="cod-exp" placeholder="MM/YY" maxlength="5">
+                </div>
+                <div class="form-group">
+                  <label for="cod-cvc">CVC</label>
+                  <input type="password" id="cod-cvc" placeholder="123" maxlength="4">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <h2 class="section-title">Order Summary</h2>
+            <div class="order-items" id="checkout-summary-items"></div>
+            <div class="summary-row"><span>Subtotal</span><span id="co-subtotal">$0.00</span></div>
+            <div class="summary-row"><span>Tax (8%)</span><span id="co-tax">$0.00</span></div>
+            <div class="summary-row"><span>Shipping</span><span id="co-shipping">$0.00</span></div>
+            <div class="summary-row total"><span>Total</span><span id="co-total">$0.00</span></div>
+
+            <div id="deposit-summary-box" style="display: none; border-top: 1px dashed var(--border); margin-top: 0.75rem; padding-top: 0.75rem;">
+              <div class="summary-row highlight"><span>Deposit Due (20%)</span><span id="co-deposit">$0.00</span></div>
+              <div class="summary-row" style="margin-top: 0.4rem; font-weight: 600;"><span>Due On Delivery</span><span id="co-remaining">$0.00</span></div>
+            </div>
+
+            <button type="submit" id="checkout-submit-btn" class="btn-primary" style="width: 100%; margin-top: 1rem; padding: 0.85rem;">Pay & Complete Order</button>
+          </div>
+        </div>
+      </form>
+    </section>
   </main>
 
-  <div class="modal-backdrop" id="product-modal" onclick="closeModalOnBackdrop(event)">
-    <div class="modal-container">
-      <button class="modal-close-btn" onclick="closeProductModal()">×</button>
-      <div class="modal-image-wrapper">
-        <img id="modal-img" src="" alt="Product Image">
-      </div>
-      <div class="modal-content">
-        <span class="modal-category" id="modal-category">Category</span>
-        <h2 class="modal-title" id="modal-title">Product Name</h2>
-        <p class="modal-desc" id="modal-desc">Detailed product description goes here.</p>
-        <span class="modal-price" id="modal-price">$0.00</span>
-        <button class="btn-primary" style="margin-top: 0.5rem;" onclick="closeProductModal()">Add to Cart</button>
+  <div class="modal-overlay" id="cart-confirm-modal" onclick="if(event.target === this) closeCartModal()">
+    <div class="modal-card">
+      <div class="modal-icon">✓</div>
+      <h3>Added to Cart!</h3>
+      <p id="modal-product-name" style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;"></p>
+      <div style="display: flex; gap: 0.75rem;">
+        <button class="btn-outline" style="flex:1;" onclick="closeCartModal()">Keep Shopping</button>
+        <button class="btn-primary" style="flex:1;" onclick="goToCheckout()">Checkout Now</button>
       </div>
     </div>
   </div>
 
-  <footer id="about-us">
-    <div class="footer-container">
-      <div class="footer-socials">
-        <h3>Follow Us</h3>
-        <div class="social-icons">
-          <a href="#" class="social-icon" title="Facebook">f</a>
-          <a href="#" class="social-icon" title="Instagram">ig</a>
-          <a href="#" class="social-icon" title="Twitter">tw</a>
-        </div>
-      </div>
+  <div class="modal-overlay" id="order-success-modal">
+    <div class="modal-card">
+      <div class="modal-icon">✓</div>
+      <h3>Purchase Successful!</h3>
+      <p id="modal-order-desc" style="font-size: 0.9rem; color: var(--text-muted); margin: 0.5rem 0 1.5rem; line-height: 1.5;"></p>
+      <button class="btn-primary" style="width: 100%;" onclick="completeOrderFlow()">Return to Home</button>
     </div>
-    <div class="footer-bottom">
-      &copy; 2026 J.S Shop. All Rights Reserved.
+  </div>
+
+  <div class="overlay" id="overlay" onclick="toggleCart()"></div>
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="cart-header">
+      <h3>Shopping Cart</h3>
+      <button class="btn-outline" style="padding: 0.4rem 0.8rem;" onclick="toggleCart()">✕</button>
     </div>
-  </footer>
+    <div class="cart-items" id="cart-items"></div>
+    <div style="border-top: 1px solid var(--border); padding-top: 1rem;">
+      <div class="summary-row"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
+      <div class="summary-row total"><span>Total</span><span id="cart-total">$0.00</span></div>
+      <button class="btn-primary" style="width: 100%; margin-top: 1rem;" onclick="goToCheckout()">Proceed to Checkout</button>
+    </div>
+  </div>
 
   <script>
     let currentHeroIndex = 0;
+    let heroTimer = null;
+    let selectedPaymentMethod = 'card';
 
     const initialStockSnapshot = [
-      { id: 1, name: "Air Runner Max", category: "Sneakers", price: 129.99, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Lightweight performance sneakers designed for maximum everyday comfort." },
-      { id: 2, name: "Oxford Classic", category: "Formal", price: 159.99, image: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=600", desc: "Handcrafted genuine leather shoes built for elegance and formal wear." },
-      { id: 3, name: "Summit Hiker", category: "Boots", price: 189.99, image: "https://images.unsplash.com/photo-1520639888713-7851133b1ed0?w=600", desc: "Durable terrain boots engineered to endure outdoor conditions." }
+      { id: 1, name: "Air Runner Max", category: "Sneakers", price: 129.99, stock: 12, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Lightweight performance sneakers designed for maximum everyday comfort." },
+      { id: 2, name: "Oxford Classic", category: "Formal", price: 159.99, stock: 3, image: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=600", desc: "Handcrafted genuine leather shoes built for elegance and formal wear." },
+      { id: 3, name: "Summit Hiker", category: "Boots", price: 189.99, stock: 4, image: "https://images.unsplash.com/photo-1520639888713-7851133b1ed0?w=600", desc: "Durable terrain boots engineered to endure outdoor conditions." }
     ];
 
     let products = JSON.parse(localStorage.getItem('sole_products')) || initialStockSnapshot;
+    let cart = [];
+
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'a') {
+        e.preventDefault();
+        window.location.href = 'admin.html';
+      }
+    });
 
     function toggleTheme() {
       document.body.classList.toggle('dark-theme');
@@ -354,10 +441,41 @@
       document.getElementById('theme-toggle-btn').innerText = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
     }
 
+    function loadSavedTheme() {
+      if (localStorage.getItem('js_shop_theme') === 'dark') {
+        document.body.classList.add('dark-theme');
+        document.getElementById('theme-toggle-btn').innerText = '☀️ Light Mode';
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem('sole_products', JSON.stringify(products));
+    }
+
+    function switchView(view) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+      if (view === 'user') {
+        document.getElementById('user-view').classList.add('active');
+        products = JSON.parse(localStorage.getItem('sole_products')) || initialStockSnapshot;
+        applyFilters();
+        renderHero();
+      } else if (view === 'checkout') {
+        if(cart.length === 0) {
+          alert("Your cart is empty!");
+          switchView('user');
+          return;
+        }
+        document.getElementById('checkout-view').classList.add('active');
+        selectPayment('card');
+        renderCheckoutSummary();
+      }
+    }
+
     function renderHero() {
       const container = document.getElementById('hero-carousel-container');
       const dotsContainer = document.getElementById('hero-dots');
       if (!products.length) return;
+      if (currentHeroIndex >= products.length) currentHeroIndex = 0;
 
       container.innerHTML = products.map((p, i) => `
         <div class="hero-slide ${i === currentHeroIndex ? 'active' : ''}">
@@ -367,33 +485,35 @@
             <p class="hero-desc">${p.desc}</p>
             <div class="hero-price-row">
               <span class="hero-price">$${p.price.toFixed(2)}</span>
+              <button class="btn-primary" onclick="addToCart(${p.id})">Add to Cart</button>
             </div>
           </div>
-          <div class="hero-image-wrapper" onclick="openProductModal(${p.id})">
-            <img src="${p.image}" alt="${p.name}">
-          </div>
+          <div class="hero-image-wrapper"><img src="${p.image}" alt="${p.name}"></div>
         </div>
       `).join('');
 
       dotsContainer.innerHTML = products.map((_, i) => `
         <span class="dot ${i === currentHeroIndex ? 'active' : ''}" onclick="setHeroSlide(${i})"></span>
       `).join('');
+
+      clearInterval(heroTimer);
+      heroTimer = setInterval(nextHeroSlide, 5000);
     }
 
     function setHeroSlide(index) { currentHeroIndex = index; renderHero(); }
     function nextHeroSlide() { currentHeroIndex = (currentHeroIndex + 1) % products.length; renderHero(); }
     function prevHeroSlide() { currentHeroIndex = (currentHeroIndex - 1 + products.length) % products.length; renderHero(); }
 
-    function filterByCategoryNav(categoryName) {
-      document.getElementById('category-filter').value = categoryName;
-      applyFilters();
-    }
-
     function applyFilters() {
+      const search = document.getElementById('search-input').value.toLowerCase();
       const category = document.getElementById('category-filter').value;
       const sort = document.getElementById('sort-filter').value;
 
-      let filtered = products.filter(p => category === 'All' || p.category === category);
+      let filtered = products.filter(p => {
+        return (p.name.toLowerCase().includes(search) || p.desc.toLowerCase().includes(search)) &&
+               (category === 'All' || p.category === category);
+      });
+
       if (sort === 'price-low') filtered.sort((a,b) => a.price - b.price);
       if (sort === 'price-high') filtered.sort((a,b) => b.price - a.price);
 
@@ -403,11 +523,8 @@
     function renderProducts(items) {
       const container = document.getElementById('product-container');
       container.innerHTML = items.map(p => `
-        <div class="card" onclick="openProductModal(${p.id})">
-          <div class="card-img-wrapper">
-            <span class="quick-view-badge">Quick View</span>
-            <img src="${p.image}" alt="${p.name}">
-          </div>
+        <div class="card">
+          <div class="card-img-wrapper"><img src="${p.image}" alt="${p.name}"></div>
           <div class="card-body">
             <div class="card-header-info">
               <span class="card-category">${p.category}</span>
@@ -416,36 +533,168 @@
             <p class="card-desc">${p.desc}</p>
             <div class="card-footer">
               <span class="card-price">$${p.price.toFixed(2)}</span>
+              <button class="btn-primary" onclick="addToCart(${p.id})" ${p.stock === 0 ? 'disabled' : ''}>
+                ${p.stock > 0 ? 'Add to Cart' : 'Sold Out'}
+              </button>
             </div>
           </div>
         </div>
       `).join('');
     }
 
-    /* Modal Display Logic */
-    function openProductModal(productId) {
+    function toggleCart() {
+      document.getElementById('cart-drawer').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('active');
+    }
+
+    function addToCart(productId) {
       const product = products.find(p => p.id === productId);
-      if (!product) return;
+      const item = cart.find(i => i.id === productId);
 
-      document.getElementById('modal-img').src = product.image;
-      document.getElementById('modal-category').innerText = product.category;
-      document.getElementById('modal-title').innerText = product.name;
-      document.getElementById('modal-desc').innerText = product.desc;
-      document.getElementById('modal-price').innerText = `$${product.price.toFixed(2)}`;
+      if (item) {
+        if (item.qty < product.stock) item.qty++;
+        else return alert('Maximum stock reached!');
+      } else {
+        cart.push({ ...product, qty: 1 });
+      }
 
-      document.getElementById('product-modal').classList.add('active');
+      updateCartUI();
+      openCartModal(product.name);
     }
 
-    function closeProductModal() {
-      document.getElementById('product-modal').classList.remove('active');
-    }
-
-    function closeModalOnBackdrop(event) {
-      if (event.target.classList.contains('modal-backdrop')) {
-        closeProductModal();
+    function updateQty(index, delta) {
+      const item = cart[index];
+      const product = products.find(p => p.id === item.id);
+      if (delta > 0 && item.qty >= product.stock) return alert('Stock limit reached!');
+      
+      item.qty += delta;
+      if (item.qty <= 0) cart.splice(index, 1);
+      
+      updateCartUI();
+      if(document.getElementById('checkout-view').classList.contains('active')) {
+        renderCheckoutSummary();
       }
     }
 
+    function updateCartUI() {
+      document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+      const container = document.getElementById('cart-items');
+      
+      if (cart.length === 0) {
+        container.innerHTML = `<p style="text-align: center; color: var(--text-muted); margin-top: 3rem;">Your cart is empty.</p>`;
+      } else {
+        container.innerHTML = cart.map((item, index) => `
+          <div class="cart-item">
+            <img src="${item.image}" alt="${item.name}">
+            <div class="cart-item-details">
+              <div class="order-item-title">${item.name}</div>
+              <div class="order-item-price">$${(item.price * item.qty).toFixed(2)}</div>
+              <div class="qty-controls">
+                <button class="btn-qty" onclick="updateQty(${index}, -1)">-</button>
+                <span>${item.qty}</span>
+                <button class="btn-qty" onclick="updateQty(${index}, 1)">+</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+      document.getElementById('cart-total').innerText = `$${subtotal.toFixed(2)}`;
+    }
+
+    function openCartModal(name) {
+      document.getElementById('modal-product-name').innerText = `"${name}" was added to your cart.`;
+      document.getElementById('cart-confirm-modal').classList.add('active');
+    }
+    function closeCartModal() { document.getElementById('cart-confirm-modal').classList.remove('active'); }
+
+    function goToCheckout() {
+      closeCartModal();
+      if(document.getElementById('cart-drawer').classList.contains('open')) toggleCart();
+      switchView('checkout');
+    }
+
+    function renderCheckoutSummary() {
+      document.getElementById('checkout-summary-items').innerHTML = cart.map(item => `
+        <div class="order-item">
+          <img src="${item.image}" alt="${item.name}">
+          <div class="order-item-info">
+            <div class="order-item-title">${item.name}</div>
+            <div class="order-item-qty">Qty: ${item.qty}</div>
+          </div>
+          <div class="order-item-price">$${(item.price * item.qty).toFixed(2)}</div>
+        </div>
+      `).join('');
+
+      calculateCheckoutTotals();
+    }
+
+    function calculateCheckoutTotals() {
+      const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+      const tax = subtotal * 0.08;
+      const zip = document.getElementById('zip') ? document.getElementById('zip').value.trim() : '';
+      let shipping = zip ? (zip.startsWith('9') ? 15 : (zip.startsWith('1') ? 5 : 9.99)) : 0;
+      const total = subtotal + tax + shipping;
+
+      document.getElementById('co-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+      document.getElementById('co-tax').innerText = `$${tax.toFixed(2)}`;
+      document.getElementById('co-shipping').innerText = `$${shipping.toFixed(2)}`;
+      document.getElementById('co-total').innerText = `$${total.toFixed(2)}`;
+
+      const depositBox = document.getElementById('deposit-summary-box');
+      const submitBtn = document.getElementById('checkout-submit-btn');
+
+      if (selectedPaymentMethod === 'cod') {
+        const deposit = total * 0.20;
+        document.getElementById('co-deposit').innerText = `$${deposit.toFixed(2)}`;
+        document.getElementById('co-remaining').innerText = `$${(total - deposit).toFixed(2)}`;
+        depositBox.style.display = 'block';
+        submitBtn.innerText = `Pay $${deposit.toFixed(2)} Deposit & Order`;
+      } else {
+        depositBox.style.display = 'none';
+        submitBtn.innerText = 'Pay & Complete Order';
+      }
+    }
+
+    function selectPayment(type) {
+      selectedPaymentMethod = type;
+      document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('active'));
+      const radio = document.getElementById(`pay-${type}`);
+      if (radio) { radio.checked = true; radio.closest('.payment-card').classList.add('active'); }
+      document.querySelectorAll('.payment-fields-section').forEach(s => s.classList.remove('active'));
+
+      if (type === 'card') document.getElementById('card-fields').classList.add('active');
+      else if (type === 'paypal') document.getElementById('paypal-fields').classList.add('active');
+      else if (type === 'cod') document.getElementById('cod-fields').classList.add('active');
+
+      calculateCheckoutTotals();
+    }
+
+    function processOrder(e) {
+      e.preventDefault();
+      cart.forEach(cartItem => {
+        const product = products.find(p => p.id === cartItem.id);
+        if (product) product.stock -= cartItem.qty;
+      });
+
+      saveState();
+
+      const orderId = '#' + Math.floor(100000 + Math.random() * 900000);
+      document.getElementById('modal-order-desc').innerHTML = `Order <strong>${orderId}</strong> processed successfully!`;
+      document.getElementById('order-success-modal').classList.add('active');
+    }
+
+    function completeOrderFlow() {
+      cart = [];
+      updateCartUI();
+      document.getElementById('checkout-form').reset();
+      document.getElementById('order-success-modal').classList.remove('active');
+      switchView('user');
+    }
+
+    loadSavedTheme();
     applyFilters();
     renderHero();
   </script>
