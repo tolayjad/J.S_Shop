@@ -36,6 +36,7 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    html { scroll-behavior: smooth; }
     body { background-color: var(--bg-page); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; transition: background-color 0.3s ease, color 0.3s ease; }
 
     header {
@@ -47,12 +48,34 @@
       position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm);
     }
 
+    .header-left { display: flex; align-items: center; gap: 2rem; }
+
     .logo {
       font-size: 1.5rem; font-weight: 800;
       background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       cursor: pointer; user-select: none;
     }
+
+    /* Navigation Links & Dropdown */
+    .nav-links { display: flex; align-items: center; gap: 1.5rem; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.95rem; transition: color 0.2s ease; cursor: pointer; }
+    .nav-links a:hover { color: var(--primary); }
+
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-btn { display: flex; align-items: center; gap: 0.3rem; padding: 0.5rem 0; }
+    .dropdown-content {
+      display: none; position: absolute; top: 100%; left: 0;
+      background-color: var(--bg-card); min-width: 160px;
+      box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+      border-radius: 8px; overflow: hidden; z-index: 101;
+    }
+    .dropdown-content a {
+      color: var(--text-main); padding: 0.75rem 1rem; text-decoration: none;
+      display: block; font-weight: 500; font-size: 0.9rem; transition: background 0.2s ease;
+    }
+    .dropdown-content a:hover { background-color: var(--bg-surface); color: var(--primary); }
+    .dropdown:hover .dropdown-content { display: block; }
 
     .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
 
@@ -85,7 +108,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Top Search Bar Styling */
     .controls-bar {
       display: flex; gap: 1rem; align-items: center;
       margin-bottom: 2rem; background: var(--bg-card); padding: 0.85rem 1.25rem; border-radius: var(--radius);
@@ -96,15 +118,13 @@
       background: var(--bg-surface); border: 1px solid var(--border); border-radius: 8px;
       padding: 0 0.85rem; transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
-    .search-input-wrapper:focus-within {
-      border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-    }
+    .search-input-wrapper:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
     .search-input-wrapper span { font-size: 1.1rem; color: var(--text-muted); }
     .search-input-wrapper input {
       width: 100%; border: none; background: transparent; padding: 0.65rem 0;
       font-size: 0.95rem; color: var(--text-main); outline: none;
     }
-    
+
     select {
       padding: 0.65rem 1rem; border-radius: 8px; border: 1px solid var(--border);
       background: var(--bg-surface); color: var(--text-main); font-size: 0.9rem;
@@ -161,7 +181,7 @@
     .checkout-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem; box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; }
     .section-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; }
     .step-badge { background: var(--primary); color: #fff; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; }
-    
+
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
     .form-group.full-width { grid-column: span 2; }
@@ -204,20 +224,63 @@
     .qty-controls { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.4rem; }
     .btn-qty { padding: 2px 8px; border-radius: 4px; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); }
 
+    /* Footer Styling */
+    footer {
+      background-color: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem 1.5rem;
+      margin-top: 3rem;
+    }
+    .footer-container {
+      max-width: 1280px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2.5rem;
+    }
+    .footer-brand p { color: var(--text-muted); margin-top: 0.75rem; font-size: 0.9rem; line-height: 1.6; max-width: 360px; }
+    .footer-title { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
+    .social-links { display: flex; gap: 1rem; }
+    .social-icon {
+      width: 40px; height: 40px; border-radius: 50%; background: var(--bg-surface);
+      display: flex; align-items: center; justify-content: center; text-decoration: none;
+      color: var(--text-main); font-weight: 700; transition: all 0.2s ease; border: 1px solid var(--border);
+    }
+    .social-icon:hover { background: var(--primary); color: #fff; transform: translateY(-2px); }
+    .copyright {
+      text-align: center; border-top: 1px solid var(--border);
+      margin-top: 2.5rem; padding-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted);
+    }
+
     @media (max-width: 900px) {
+      header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+      .header-left { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
       .controls-bar { flex-direction: column; align-items: stretch; }
       .hero-slide { grid-template-columns: 1fr; padding: 1.5rem; }
       .hero-image-wrapper { height: 220px; }
       .checkout-layout { grid-template-columns: 1fr; }
       .payment-options { grid-template-columns: 1fr; }
       .cart-drawer { width: 100%; right: -100%; }
+      .footer-container { grid-template-columns: 1fr; gap: 1.5rem; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="logo" onclick="switchView('user')">J.S Shop</div>
+    <div class="header-left">
+      <div class="logo" onclick="goToHome()">J.S Shop</div>
+      <ul class="nav-links">
+        <li><a onclick="goToHome()">Home</a></li>
+        <li class="dropdown">
+          <a class="dropdown-btn">Categories ▾</a>
+          <div class="dropdown-content">
+            <a onclick="filterByCategory('Sneakers')">Sneakers</a>
+            <a onclick="filterByCategory('Formal')">Formal</a>
+            <a onclick="filterByCategory('Boots')">Boots</a>
+            <a onclick="filterByCategory('Sports')">Sports</a>
+          </div>
+        </li>
+        <li><a href="#about-us">About Us</a></li>
+      </ul>
+    </div>
     <div class="nav-actions">
       <button class="btn-outline" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Light/Dark Theme">🌙 Dark Mode</button>
       <button class="btn-primary badge-btn" onclick="toggleCart()">
@@ -378,6 +441,26 @@
     </section>
   </main>
 
+  <footer id="about-us">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="logo">J.S Shop</div>
+        <p>Your premier destination for high-performance sneakers, classic formal wear, rugged outdoor boots, and specialized athletic footwear.</p>
+      </div>
+      <div>
+        <h4 class="footer-title">Connect With Us</h4>
+        <div class="social-links">
+          <a href="#" class="social-icon" title="Facebook">f</a>
+          <a href="#" class="social-icon" title="Instagram">ig</a>
+          <a href="#" class="social-icon" title="Twitter / X">x</a>
+        </div>
+      </div>
+    </div>
+    <div class="copyright">
+      &copy; 2026 J.S Shop. All rights reserved.
+    </div>
+  </footer>
+
   <div class="modal-overlay" id="cart-confirm-modal" onclick="if(event.target === this) closeCartModal()">
     <div class="modal-card">
       <div class="modal-icon">✓</div>
@@ -450,6 +533,20 @@
 
     function saveState() {
       localStorage.setItem('sole_products', JSON.stringify(products));
+    }
+
+    function goToHome() {
+      switchView('user');
+      document.getElementById('category-filter').value = 'All';
+      applyFilters();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function filterByCategory(categoryName) {
+      switchView('user');
+      document.getElementById('category-filter').value = categoryName;
+      applyFilters();
+      document.getElementById('product-container').scrollIntoView({ behavior: 'smooth' });
     }
 
     function switchView(view) {
@@ -627,15 +724,41 @@
           <div class="order-item-price">$${(item.price * item.qty).toFixed(2)}</div>
         </div>
       `).join('');
+      calculateCheckoutTotals();
+    }
 
+    function selectPayment(type) {
+      selectedPaymentMethod = type;
+      document.querySelectorAll('.payment-card').forEach(card => card.classList.remove('active'));
+      document.querySelectorAll('.payment-fields-section').forEach(sec => sec.classList.remove('active'));
+
+      if (type === 'card') {
+        document.getElementById('pay-card').checked = true;
+        document.getElementById('pay-card').parentElement.classList.add('active');
+        document.getElementById('card-fields').classList.add('active');
+        document.getElementById('deposit-summary-box').style.display = 'none';
+        document.getElementById('checkout-submit-btn').innerText = 'Pay & Complete Order';
+      } else if (type === 'paypal') {
+        document.getElementById('pay-paypal').checked = true;
+        document.getElementById('pay-paypal').parentElement.classList.add('active');
+        document.getElementById('paypal-fields').classList.add('active');
+        document.getElementById('deposit-summary-box').style.display = 'none';
+        document.getElementById('checkout-submit-btn').innerText = 'Proceed with PayPal';
+      } else if (type === 'cod') {
+        document.getElementById('pay-cod').checked = true;
+        document.getElementById('pay-cod').parentElement.classList.add('active');
+        document.getElementById('cod-fields').classList.add('active');
+        document.getElementById('deposit-summary-box').style.display = 'block';
+        document.getElementById('checkout-submit-btn').innerText = 'Pay 20% Deposit & Order';
+      }
       calculateCheckoutTotals();
     }
 
     function calculateCheckoutTotals() {
-      const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
       const tax = subtotal * 0.08;
-      const zip = document.getElementById('zip') ? document.getElementById('zip').value.trim() : '';
-      let shipping = zip ? (zip.startsWith('9') ? 15 : (zip.startsWith('1') ? 5 : 9.99)) : 0;
+      const zip = document.getElementById('zip').value.trim();
+      const shipping = (subtotal > 0 && zip) ? 15.00 : 0.00;
       const total = subtotal + tax + shipping;
 
       document.getElementById('co-subtotal').innerText = `$${subtotal.toFixed(2)}`;
@@ -643,60 +766,49 @@
       document.getElementById('co-shipping').innerText = `$${shipping.toFixed(2)}`;
       document.getElementById('co-total').innerText = `$${total.toFixed(2)}`;
 
-      const depositBox = document.getElementById('deposit-summary-box');
-      const submitBtn = document.getElementById('checkout-submit-btn');
-
       if (selectedPaymentMethod === 'cod') {
         const deposit = total * 0.20;
+        const remaining = total - deposit;
         document.getElementById('co-deposit').innerText = `$${deposit.toFixed(2)}`;
-        document.getElementById('co-remaining').innerText = `$${(total - deposit).toFixed(2)}`;
-        depositBox.style.display = 'block';
-        submitBtn.innerText = `Pay $${deposit.toFixed(2)} Deposit & Order`;
-      } else {
-        depositBox.style.display = 'none';
-        submitBtn.innerText = 'Pay & Complete Order';
+        document.getElementById('co-remaining').innerText = `$${remaining.toFixed(2)}`;
       }
-    }
-
-    function selectPayment(type) {
-      selectedPaymentMethod = type;
-      document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('active'));
-      const radio = document.getElementById(`pay-${type}`);
-      if (radio) { radio.checked = true; radio.closest('.payment-card').classList.add('active'); }
-      document.querySelectorAll('.payment-fields-section').forEach(s => s.classList.remove('active'));
-
-      if (type === 'card') document.getElementById('card-fields').classList.add('active');
-      else if (type === 'paypal') document.getElementById('paypal-fields').classList.add('active');
-      else if (type === 'cod') document.getElementById('cod-fields').classList.add('active');
-
-      calculateCheckoutTotals();
     }
 
     function processOrder(e) {
       e.preventDefault();
-      cart.forEach(cartItem => {
-        const product = products.find(p => p.id === cartItem.id);
-        if (product) product.stock -= cartItem.qty;
-      });
+      if (cart.length === 0) return alert('Your cart is empty!');
 
+      cart.forEach(item => {
+        const p = products.find(prod => prod.id === item.id);
+        if (p) p.stock = Math.max(0, p.stock - item.qty);
+      });
       saveState();
 
-      const orderId = '#' + Math.floor(100000 + Math.random() * 900000);
-      document.getElementById('modal-order-desc').innerHTML = `Order <strong>${orderId}</strong> processed successfully!`;
+      const fname = document.getElementById('fname').value;
+      const descEl = document.getElementById('modal-order-desc');
+      if (selectedPaymentMethod === 'cod') {
+        const depositVal = document.getElementById('co-deposit').innerText;
+        const remainVal = document.getElementById('co-remaining').innerText;
+        descEl.innerText = `Thank you, ${fname}! Your order is confirmed. Deposit paid: ${depositVal}. Remaining balance due on delivery: ${remainVal}.`;
+      } else {
+        descEl.innerText = `Thank you, ${fname}! Your payment was processed successfully. A confirmation email has been sent to your inbox.`;
+      }
+
       document.getElementById('order-success-modal').classList.add('active');
     }
 
     function completeOrderFlow() {
+      document.getElementById('order-success-modal').classList.remove('active');
+      document.getElementById('checkout-form').reset();
       cart = [];
       updateCartUI();
-      document.getElementById('checkout-form').reset();
-      document.getElementById('order-success-modal').classList.remove('active');
       switchView('user');
     }
 
-    loadSavedTheme();
-    applyFilters();
-    renderHero();
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedTheme();
+      switchView('user');
+    });
   </script>
 </body>
 </html>
