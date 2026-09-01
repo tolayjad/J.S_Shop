@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>J.S Shop | Stock Control Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-surface: #f1f5f9;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --accent-red: #ef4444;
+      --accent-green: #10b981;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --radius: 12px;
+    }
+
+    body.dark-theme {
+      --bg-page: #0b0f19;
+      --bg-card: #111827;
+      --bg-surface: #1f2937;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --border: #374151;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: var(--bg-page); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; transition: background-color 0.3s ease, color 0.3s ease; }
+
+    header {
+      background-color: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm);
+    }
+
+    .logo {
+      font-size: 1.5rem; font-weight: 800;
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
+
+    button {
+      cursor: pointer; padding: 0.65rem 1.25rem; border-radius: 8px; border: 1px solid transparent;
+      font-weight: 600; font-size: 0.9rem; transition: all 0.2s ease;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    }
+
+    .btn-primary { background: var(--primary); color: #ffffff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-outline { background: var(--bg-card); color: var(--text-main); border-color: var(--border); }
+    .btn-outline:hover { background: var(--bg-surface); }
+    .btn-danger { background: #fee2e2; color: var(--accent-red); }
+    .btn-danger:hover { background: var(--accent-red); color: #ffffff; }
+    .btn-warning { background: #fef3c7; color: #b45309; }
+    .btn-warning:hover { background: #f59e0b; color: #ffffff; }
+
+    main { padding: 2rem; flex: 1; max-width: 1280px; margin: 0 auto; width: 100%; position: relative; }
+
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .metric-card { 
+      background: var(--bg-card); 
+      border: 1px solid var(--border); 
+      padding: 1.5rem; 
+      border-radius: var(--radius); 
+      box-shadow: var(--shadow-sm);
+    }
+    .metric-card h4 { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.4rem; }
+    .metric-card p { color: var(--primary); font-size: 1.75rem; font-weight: 800; }
+
+    .management-grid { display: grid; grid-template-columns: 360px 1fr; gap: 2rem; }
+    .management-card { 
+      background: var(--bg-card); 
+      border: 1px solid var(--border); 
+      border-radius: var(--radius); 
+      padding: 1.5rem; 
+      box-shadow: var(--shadow-sm);
+      height: fit-content;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.8rem; }
+    .form-group label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+    input, select {
+      padding: 0.65rem 1rem; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--bg-card); color: var(--text-main); font-size: 0.9rem;
+    }
+    
+    .table-wrapper { 
+      background: var(--bg-card); 
+      border-radius: var(--radius); 
+      border: 1px solid var(--border); 
+      overflow-x: auto; 
+      box-shadow: var(--shadow-sm);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    th { color: var(--text-muted); background: var(--bg-surface); }
+    td { color: var(--text-main); }
+
+    tr.draggable-row { cursor: grab; transition: background-color 0.2s ease, transform 0.2s ease; }
+    tr.draggable-row:active { cursor: grabbing; }
+    tr.dragging { opacity: 0.4; background: var(--bg-surface); }
+    tr.drag-over { border-top: 2px solid var(--primary); background: var(--bg-surface); }
+
+    .drag-handle {
+      cursor: grab;
+      user-select: none;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      padding-right: 0.5rem;
+    }
+
+    .order-btn {
+      padding: 0.2rem 0.5rem;
+      font-size: 0.75rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 4px;
+    }
+
+    .lock-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px);
+      display: flex; justify-content: center; align-items: flex-start;
+      padding-top: 4rem; z-index: 200; border-radius: var(--radius);
+    }
+
+    #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 400; display: flex; flex-direction: column; gap: 0.5rem; }
+    .toast {
+      background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border);
+      padding: 0.85rem 1.25rem; border-radius: 8px; box-shadow: var(--shadow-lg); font-size: 0.9rem;
+      font-weight: 600; display: flex; align-items: center; gap: 0.5rem; animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+    }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+    @media (max-width: 900px) {
+      .management-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">Stock & Control Hub</div>
+    <div class="nav-actions">
+      <button class="btn-outline" id="theme-toggle-btn" onclick="toggleTheme()">🌙 Dark Mode</button>
+      <button class="btn-outline" onclick="window.location.href='index.html'">View Store</button>
+      <button class="btn-danger" id="nav-logout" onclick="logout()" style="display: none;">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="lock-overlay" id="admin-lock-overlay">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem; width: 100%; max-width: 400px; box-shadow: var(--shadow-lg);">
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+          <h2>Admin Authentication</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.4rem;">Sign in to access stock levels and inventory control.</p>
+        </div>
+        <form onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="login-username" required placeholder="admin">
+          </div>
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label>Password</label>
+            <input type="password" id="login-password" required placeholder="admin123">
+          </div>
+          <button type="submit" class="btn-primary" style="width: 100%;">Unlock Stock Hub</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card"><h4>Total Products</h4><p id="m-total-items">0</p></div>
+      <div class="metric-card"><h4>Total Units Stocked</h4><p id="m-total-stock">0</p></div>
+      <div class="metric-card"><h4>Inventory Total Value</h4><p id="m-total-value">$0.00</p></div>
+    </div>
+
+    <div style="margin-bottom: 1rem; color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+      💡 <span><strong>Tip:</strong> Drag table rows or use the <strong>▲ / ▼</strong> buttons to reorder how products appear on the storefront.</span>
+    </div>
+
+    <div class="management-grid">
+      <div class="management-card">
+        <h3 id="form-title" style="margin-bottom: 1rem;">Add New Product</h3>
+        <form id="product-form" onsubmit="handleFormSubmit(event)">
+          <input type="hidden" id="p-id">
+          <div class="form-group"><label>Product Name</label><input type="text" id="p-name" required></div>
+          <div class="form-group"><label>Category</label>
+            <select id="p-category" required>
+              <option value="Sneakers">Sneakers</option>
+              <option value="Formal">Formal</option>
+              <option value="Boots">Boots</option>
+              <option value="Sports">Sports</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Price ($)</label><input type="number" step="0.01" id="p-price" required></div>
+          <div class="form-group"><label>Stock</label><input type="number" id="p-stock" required></div>
+          <div class="form-group"><label>Image URL</label><input type="url" id="p-image" required></div>
+          <div class="form-group" style="margin-bottom: 1.25rem;"><label>Description</label><input type="text" id="p-desc" required></div>
+          
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" id="p-submit-btn" class="btn-primary" style="flex: 1;">Save Product</button>
+            <button type="button" id="p-cancel-btn" class="btn-outline" style="display: none;" onclick="resetForm()">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 40px;"></th>
+              <th>Product</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th style="width: 90px;">Arrange</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="management-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <script>
+    let isAuthenticated = false;
+    let draggedIndex = null;
+
+    const initialStockSnapshot = [
+      { id: 1, name: "Air Runner Max", category: "Sneakers", price: 129.99, stock: 12, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", desc: "Lightweight performance sneakers designed for maximum everyday comfort." },
+      { id: 2, name: "Oxford Classic", category: "Formal", price: 159.99, stock: 3, image: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=600", desc: "Handcrafted genuine leather shoes built for elegance and formal wear." },
+      { id: 3, name: "Summit Hiker", category: "Boots", price: 189.99, stock: 4, image: "https://images.unsplash.com/photo-1520639888713-7851133b1ed0?w=600", desc: "Durable terrain boots engineered to endure outdoor conditions." }
+    ];
+
+    let products = JSON.parse(localStorage.getItem('sole_products')) || initialStockSnapshot;
+
+    function showToast(message) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<span>ℹ️</span> ${message}`;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark-theme');
+      const isDark = document.body.classList.contains('dark-theme');
+      localStorage.setItem('js_shop_theme', isDark ? 'dark' : 'light');
+      document.getElementById('theme-toggle-btn').innerText = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+    }
+
+    function loadSavedTheme() {
+      if (localStorage.getItem('js_shop_theme') === 'dark') {
+        document.body.classList.add('dark-theme');
+        document.getElementById('theme-toggle-btn').innerText = '☀️ Light Mode';
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem('sole_products', JSON.stringify(products));
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      if (document.getElementById('login-username').value === 'admin' && document.getElementById('login-password').value === 'admin123') {
+        isAuthenticated = true;
+        document.getElementById('admin-lock-overlay').style.display = 'none';
+        document.getElementById('nav-logout').style.display = 'inline-flex';
+        renderManagement();
+        showToast("Authenticated as Admin");
+      } else { 
+        showToast("Invalid Login Credentials!"); 
+      }
+    }
+
+    function logout() {
+      isAuthenticated = false;
+      document.getElementById('admin-lock-overlay').style.display = 'flex';
+      document.getElementById('nav-logout').style.display = 'none';
+      showToast("Logged out successfully");
+    }
+
+    function moveProduct(index, direction) {
+      const targetIndex = index + direction;
+      if (targetIndex < 0 || targetIndex >= products.length) return;
+      
+      const temp = products[index];
+      products[index] = products[targetIndex];
+      products[targetIndex] = temp;
+
+      saveState();
+      renderManagement();
+    }
+
+    function renderManagement() {
+      const tbody = document.getElementById('management-table-body');
+      tbody.innerHTML = products.map((p, index) => `
+        <tr class="draggable-row" 
+            draggable="true" 
+            data-index="${index}"
+            ondragstart="handleDragStart(event, ${index})"
+            ondragover="handleDragOver(event)"
+            ondragleave="handleDragLeave(event)"
+            ondrop="handleDrop(event, ${index})"
+            ondragend="handleDragEnd(event)">
+          <td style="text-align: center;"><span class="drag-handle">⋮⋮</span></td>
+          <td><strong>${p.name}</strong></td>
+          <td>${p.category}</td>
+          <td>$${p.price.toFixed(2)}</td>
+          <td>${p.stock}</td>
+          <td>
+            <button class="order-btn" onclick="moveProduct(${index}, -1)" ${index === 0 ? 'disabled' : ''}>▲</button>
+            <button class="order-btn" onclick="moveProduct(${index}, 1)" ${index === products.length - 1 ? 'disabled' : ''}>▼</button>
+          </td>
+          <td>
+            <div style="display: flex; gap: 0.35rem;">
+              <button class="btn-warning" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;" onclick="editProduct(${p.id})">Edit</button>
+              <button class="btn-danger" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;" onclick="deleteProduct(${p.id})">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+
+      document.getElementById('m-total-items').innerText = products.length;
+      document.getElementById('m-total-stock').innerText = products.reduce((acc, p) => acc + p.stock, 0);
+      document.getElementById('m-total-value').innerText = `$${products.reduce((acc, p) => acc + (p.price * p.stock), 0).toFixed(2)}`;
+    }
+
+    function handleDragStart(e, index) {
+      draggedIndex = index;
+      e.currentTarget.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const row = e.currentTarget;
+      if (row && !row.classList.contains('drag-over')) {
+        row.classList.add('drag-over');
+      }
+    }
+
+    function handleDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleDrop(e, targetIndex) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      
+      if (draggedIndex === null || draggedIndex === targetIndex) return;
+
+      const draggedItem = products.splice(draggedIndex, 1)[0];
+      products.splice(targetIndex, 0, draggedItem);
+
+      saveState();
+      renderManagement();
+      showToast("Order updated");
+    }
+
+    function handleDragEnd(e) {
+      e.currentTarget.classList.remove('dragging');
+      document.querySelectorAll('.draggable-row').forEach(row => row.classList.remove('drag-over'));
+      draggedIndex = null;
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const existingId = document.getElementById('p-id').value;
+
+      if (existingId) {
+        const index = products.findIndex(p => p.id == existingId);
+        if (index !== -1) {
+          products[index] = {
+            id: Number(existingId),
+            name: document.getElementById('p-name').value,
+            category: document.getElementById('p-category').value,
+            price: parseFloat(document.getElementById('p-price').value),
+            stock: parseInt(document.getElementById('p-stock').value),
+            image: document.getElementById('p-image').value,
+            desc: document.getElementById('p-desc').value
+          };
+          showToast("Product updated");
+        }
+      } else {
+        const productData = {
+          id: Date.now(),
+          name: document.getElementById('p-name').value,
+          category: document.getElementById('p-category').value,
+          price: parseFloat(document.getElementById('p-price').value),
+          stock: parseInt(document.getElementById('p-stock').value),
+          image: document.getElementById('p-image').value,
+          desc: document.getElementById('p-desc').value
+        };
+        products.push(productData);
+        showToast("Product created");
+      }
+
+      saveState();
+      resetForm();
+      renderManagement();
+    }
+
+    function editProduct(id) {
+      const product = products.find(p => p.id === id);
+      if (!product) return;
+
+      document.getElementById('p-id').value = product.id;
+      document.getElementById('p-name').value = product.name;
+      document.getElementById('p-category').value = product.category;
+      document.getElementById('p-price').value = product.price;
+      document.getElementById('p-stock').value = product.stock;
+      document.getElementById('p-image').value = product.image;
+      document.getElementById('p-desc').value = product.desc;
+
+      document.getElementById('form-title').innerText = "Edit Product";
+      document.getElementById('p-submit-btn').innerText = "Update Product";
+      document.getElementById('p-cancel-btn').style.display = "inline-flex";
+    }
+
+    function resetForm() {
+      document.getElementById('product-form').reset();
+      document.getElementById('p-id').value = "";
+      document.getElementById('form-title').innerText = "Add New Product";
+      document.getElementById('p-submit-btn').innerText = "Save Product";
+      document.getElementById('p-cancel-btn').style.display = "none";
+    }
+
+    function deleteProduct(id) {
+      if (document.getElementById('p-id').value == id) resetForm();
+      products = products.filter(p => p.id !== id);
+      saveState();
+      renderManagement();
+      showToast("Product deleted");
+    }
+
+    loadSavedTheme();
+  </script>
+</body>
+</html>
