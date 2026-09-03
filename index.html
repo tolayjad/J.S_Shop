@@ -754,7 +754,7 @@
 
     function calculateCheckoutTotals() {
       const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      const tax = subtotal * 0.08;
+      const tax = 3;
       const zip = document.getElementById('zip').value.trim();
       const shipping = (subtotal > 0 && zip) ? 15.00 : 0.00;
       const total = subtotal + tax + shipping;
