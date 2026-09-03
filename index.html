@@ -384,17 +384,7 @@
                 </div>
               </div>
 
-              <div id="paypal-fields" class="payment-fields-section form-grid">
-                <div class="form-group full-width">
-                  <label for="paypal-email">PayPal Email Address</label>
-                  <input type="email" id="paypal-email" placeholder="user@paypal-account.com">
-                </div>
-                <div class="form-group full-width">
-                  <label for="paypal-name">Account Holder Name</label>
-                  <input type="text" id="paypal-name" placeholder="John Doe">
-                </div>
-              </div>
-
+              
               <div id="cod-fields" class="payment-fields-section form-grid">
                 <div class="form-group full-width" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 1rem; border-radius: 8px;">
                   <h4 style="color: var(--accent-green); font-size: 0.95rem; margin-bottom: 0.2rem;">Cash On Delivery (20% Deposit)</h4>
@@ -733,13 +723,7 @@
         document.getElementById('card-fields').classList.add('active');
         document.getElementById('deposit-summary-box').style.display = 'none';
         document.getElementById('checkout-submit-btn').innerText = 'Pay & Complete Order';
-      } else if (type === 'paypal') {
-        document.getElementById('pay-paypal').checked = true;
-        document.getElementById('pay-paypal').parentElement.classList.add('active');
-        document.getElementById('paypal-fields').classList.add('active');
-        document.getElementById('deposit-summary-box').style.display = 'none';
-        document.getElementById('checkout-submit-btn').innerText = 'Proceed with PayPal';
-      } else if (type === 'cod') {
+      }else if (type === 'cod') {
         document.getElementById('pay-cod').checked = true;
         document.getElementById('pay-cod').parentElement.classList.add('active');
         document.getElementById('cod-fields').classList.add('active');
